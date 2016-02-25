@@ -214,8 +214,8 @@ public class  xmlParser {
         Element started = getElementByTagNameNR(n, "Started");
         Element ends = getElementByTagNameNR(n, "Ends");
         Element description = getElementByTagNameNR(n, "Description");
-        Element latitude = getElementByTagNameNR(location,"Latitude");
-        Element logitude = getElementByTagNameNR(location,"Longitude");
+        Attr latitude = location.getAttributeNode("Latitude");
+        Attr logitude = location.getAttributeNode("Longitude");;
 
         ArrayList<String> categorieslist = new ArrayList<String>();
 
@@ -280,11 +280,11 @@ public class  xmlParser {
         result.setLocation(getElementText(location));
 
         if (logitude != null) {
-            result.setLongitude(getElementText(logitude));
+            result.setLongitude(logitude.getValue());
         }
 
         if (latitude != null) {
-            result.setLatitude(getElementText(latitude));            
+            result.setLatitude(latitude.getValue());            
         }
 
         result.setCountry(getElementText(country));
