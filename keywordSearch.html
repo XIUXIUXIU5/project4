@@ -1,11 +1,40 @@
 <!DOCTYPE html>
 <html>
+<head>
+	<script type="text/javascript">
+
+var xmlHttp = new XMLHttpRequest(); // works only for Firefox, Safari, ...
+
+// send Google suggest request based on the user input
+function sendAjaxRequest(input)
+{
+  var request = "http://localhost:1448/eBay/suggest?q="+encodeURI(input);
+
+  xmlHttp.open("GET", request); 
+  xmlHttp.onreadystatechange = showSuggestion; 
+  xmlHttp.send(null);
+}
+
+// update Web page with the response from Google suggest
+function showSuggestion() {
+  if (xmlHttp.readyState == 4) {
+    response = xmlHttp.responseText;
+    response = response.replace(/</g, "&lt;");
+    response = response.replace(/>/g, "&gt;");
+    document.getElementById("suggestion").innerHTML = response;
+  }
+}
+</script>
+</head>
+
 <body>
 <form name="searchForm" method="get" action="http://localhost:1448/eBay/search?">
-    Query: <input type="text" name="q"/> 
+    Query: <input type="text" name="q" onkeyup="sendAjaxRequest(this.value);"/> 
     <input type="text" name="numResultsToSkip" value="0" hidden>
     <input type="text" name="numResultsToReturn" value="10" hidden>
     <input type="submit" value="GO" />
 </form>
+  <b>Suggestion</b>: <div id="suggestion"></div>
+
 </body>
 </html>
