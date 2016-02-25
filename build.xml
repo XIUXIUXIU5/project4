@@ -45,6 +45,9 @@
         <copy todir="${build-dir}" preservelastmodified="true" overwrite="true">
             <fileset dir="WebContents" />
         </copy>
+        <copy todir="${build-dir}" preservelastmodified="true" overwrite="true">
+            <fileset dir="." includes="*.jsp" />
+        </copy>
 	
         <!-- create the war file -->
         <jar basedir="${build-dir}" destfile="${build-dir}/${war-name}.war"/>
