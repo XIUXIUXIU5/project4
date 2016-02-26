@@ -1,12 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script type="text/javascript" src="AutoSuggest.js">
+<style>
 
+div.suggestions {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid black;
+    position: absolute; 
+        z-index:99;
+  
+}
+
+div.suggestions div {
+    cursor: default;
+    padding: 0px 3px;
+        background-color: white;
+
+}
+
+div.suggestions div.current {
+    background-color: #3366cc;
+    color: white;
+}
+
+</style>
+
+	<script type="text/javascript" src="AutoSuggest.js">
 </script>
 </head>
 
 <body>
+
 <form name="searchForm" method="get" action="http://localhost:1448/eBay/search?">
     Query: <input type="text" name="q" id="querybox"/> 
     <input type="text" name="numResultsToSkip" value="0" hidden>
