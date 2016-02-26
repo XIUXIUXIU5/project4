@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
+import java.net.URI;
 import java.io.BufferedReader;
 import javax.servlet.ServletOutputStream;
 import java.io.InputStreamReader;
@@ -22,9 +23,24 @@ public class ProxyServlet extends HttpServlet implements Servlet {
     	String query = request.getParameter("q");
 
         query = escapeSpace(query);
-        String url = "http://google.com/complete/search?output=toolbar&q="+query;
+
+      String urlString = "";
+      try{
+         // escape characters
+         URI uri = new URI(
+            "http", 
+            "google.com", 
+            "/complete/search",
+            "output=toolbar&q=" + query,
+            null);
          
-        URL obj = new URL(url);
+         urlString = uri.toASCIIString();
+      } catch(Exception e){
+        
+      }
+      
+         
+        URL obj = new URL(urlString);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
  
         // optional default is GET
@@ -34,7 +50,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
         con.setRequestProperty("User-Agent", USER_AGENT);
  
         int responseCode = con.getResponseCode();
-        System.out.println("\nSending 'GET' request to URL : " + url);
+        System.out.println("\nSending 'GET' request to URL : " + urlString);
         System.out.println("Response Code : " + responseCode);
  
         BufferedReader in = new BufferedReader(
