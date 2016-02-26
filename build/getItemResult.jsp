@@ -2,32 +2,31 @@
 <html>
 <head>Item Detail
 
-	<head> 
-		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
-		<style type="text/css"> 
-		html { height: 100% } 
-		body { height: 100%; margin: 0px; padding: 0px } 
-		#map_canvas { height: 100% } 
-		</style> 
-		<script type="text/javascript" 
-		src="http://maps.google.com/maps/api/js?sensor=false"> 
-		</script> 
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
+    <style type="text/css"> 
+    html { height: 100% } 
+    body { height: 100%; margin: 0px; padding: 0px } 
+    #map_canvas { height: 100% } 
+    </style> 
+    <script type="text/javascript" 
+    src="http://maps.google.com/maps/api/js?sensor=false"> 
+    </script> 
 
 
 
-		<c:choose>
-		<c:when test="${result.latitude != null && result.longitude != null}">
-		<script type="text/javascript"> 
-		var latitude = ${result.latitude};
-		var longitude = ${result.longitude};
-		</script>
-	</c:when>
-	<c:otherwise>
-	<script type="text/javascript"> 
+    <c:choose>
+    <c:when test="${not empty result && result.latitude != null && result.longitude != null}">
+    <script type="text/javascript"> 
+    var latitude = ${result.latitude};
+    var longitude = ${result.longitude};
+    </script>
+  </c:when>
+  <c:otherwise>
+  <script type="text/javascript"> 
 
-	var latitude = null;
-	var longitude = null;
-	</script>
+  var latitude = null;
+  var longitude = null;
+  </script>
 </c:otherwise>
 
 </c:choose>
@@ -38,66 +37,77 @@ var geocoder;
 var map;
 
 </script>
+<c:if test="${not empty result}">
 <script>
 function initialize() {
-	geocoder = new google.maps.Geocoder();
-	var mapOptions;
-	if (latitude != null && longitude != null) {
-		mapOptions = { 
-      				zoom: 14, // default is 8  
-      				center: new google.maps.LatLng(latitude, longitude), 
-      				mapTypeId: google.maps.MapTypeId.ROADMAP 
-      			}; 
-      			map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+  geocoder = new google.maps.Geocoder();
+  var mapOptions;
+  if (latitude != null && longitude != null) {
+    mapOptions = { 
+              zoom: 14, // default is 8  
+              center: new google.maps.LatLng(latitude, longitude), 
+              mapTypeId: google.maps.MapTypeId.ROADMAP 
+            }; 
+            map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
-      		}
-      		else
-      		{  	
+          }
+          else
+          {   
 
-      			var address = "${result.location}" + " " + "${result.country}"; 
-      			geocoder.geocode( { 'address': address}, function(results, status) {
-      				if (status == google.maps.GeocoderStatus.OK) {
-      					mapOptions = { 
-      				zoom: 8, // default is 8  
-      				mapTypeId: google.maps.MapTypeId.ROADMAP 
-      			}; 
-      			map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-      			map.setCenter(results[0].geometry.location);
-      			var marker = new google.maps.Marker({
-      				map: map,
-      				position: results[0].geometry.location
-      			});
-      		} else {
-      			mapOptions = { 
-      				zoom: 1, // default is 8 
-      				center: new google.maps.LatLng(0, 0), 
-      				mapTypeId: google.maps.MapTypeId.ROADMAP 
-      			}; 
-      			map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-      		}
-      	});
-      		}
-      	}
-      	</script> 
-      </head> 
+            var address = "${result.location}" + " " + "${result.country}"; 
+            geocoder.geocode( { 'address': address}, function(results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                mapOptions = { 
+              zoom: 8, // default is 8  
+              mapTypeId: google.maps.MapTypeId.ROADMAP 
+            }; 
+            map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+            map.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location
+            });
+          } else {
+            mapOptions = { 
+              zoom: 1, // default is 8 
+              center: new google.maps.LatLng(0, 0), 
+              mapTypeId: google.maps.MapTypeId.ROADMAP 
+            }; 
+            map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+          }
+        });
+          }
+        }
+        </script> 
+      </c:if>
   </head>
-  <body onload="initialize()">
 
-  	<form name="getItemForm" method="get" action="/eBay/item">
-  		ItemID: <input type="text" name="id"/> <br/>
-  		<input type="submit" value="submit" />
-  	</form>
+  <c:choose>
+  <c:when test="${not empty result}">
+    <body onload="initialize()">
+</c:when>
+<c:otherwise>
+<body>
+</c:otherwise>
+</c:choose>
 
-  	<h4>
-  		Item Information:
-  	</h4>
-  	<p>ID: ${result.id} </p>
-  	<p>Name: ${result.name} </p>
-  	<p>Category: 
-  		<c:forEach var="category" items="${result.categories}">
-  		${category}
-  		${'	'}
-  	</c:forEach>
+    <form name="getItemForm" method="get" action="/eBay/item">
+      ItemID: <input type="text" name="id"/> <br/>
+      <input type="submit" value="submit" />
+    </form>
+<c:choose>
+ <c:when test="${not empty result}">
+
+    <h4>
+      Item Information:
+    </h4>
+    <p>ID: ${result.id} </p>
+    <p>Name: ${result.name} </p>
+    <p>Category: 
+      <c:forEach var="category" items="${result.categories}">
+      ${category}
+      ${' '}
+    </c:forEach>
   </p>
   <p>Buy_price: ${result.buy_price} </p>
   <p>First_bid: ${result.first_bid} </p>
@@ -118,7 +128,7 @@ function initialize() {
 
 </br>
 <h4>
-	Bids Information:
+  Bids Information:
 </h4>
 
 <c:forEach var="bid" items="${result.bids}" varStatus="loop">
@@ -132,6 +142,10 @@ function initialize() {
 </br>
 </c:forEach>
 
-
+</c:when>
+<c:otherwise>
+No such Item found
+</c:otherwise>
+</c:choose>
 </body>
 </html>

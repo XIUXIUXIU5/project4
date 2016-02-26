@@ -16,16 +16,20 @@ public class ItemServlet extends HttpServlet implements Servlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         String id = request.getParameter("id");
-        String result = new AuctionSearchClient().getXMLDataForItemId(id);
         try {
-	        xmlParser parser = new xmlParser();
-	        Item item = parser.parseXML(result);
-	        request.setAttribute("result", item);
+            String result = AuctionSearchClient.getXMLDataForItemId(id);
+             if (result != null) {
+                xmlParser parser = new xmlParser();
+                Item item = parser.parseXML(result);
+                 request.setAttribute("result", item);                
+             }
+             else{
+                request.setAttribute("result", null);   
+             }
         } catch(Exception e){
-        	StringWriter sw = new StringWriter();
-  			e.printStackTrace(new PrintWriter(sw));
-  			String stackTrace = sw.toString();
-        	request.setAttribute("result", stackTrace);
+            request.setAttribute("result", null);   
+            request.setAttribute("returned", "error");                
+             
         	System.out.println(e);
         }
 

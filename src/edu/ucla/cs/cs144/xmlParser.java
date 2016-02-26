@@ -80,7 +80,6 @@ public class  xmlParser {
             exception.printStackTrace();
             System.out.println("There should be no errors " +
                                "in the supplied XML files.");
-            System.exit(3);
         }
         
     }
@@ -153,7 +152,6 @@ public class  xmlParser {
             catch (ParseException e) {
                 System.out.println("This method should work for all " +
                                    "money values you find in our data.");
-                System.exit(20);
             }
             nf.setGroupingUsed(false);
             return nf.format(am).substring(1);
@@ -162,7 +160,7 @@ public class  xmlParser {
     
     /* Process one items-???.xml file.
      */
-    public static Item parseXML(String text) throws IOException, ParseException {
+    public Item parseXML(String text) throws IOException, ParseException {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
@@ -172,11 +170,9 @@ public class  xmlParser {
         }
         catch (FactoryConfigurationError e) {
             System.out.println("unable to get a document builder factory");
-            System.exit(2);
         } 
         catch (ParserConfigurationException e) {
             System.out.println("parser was unable to be configured");
-            System.exit(2);
         }        
     
         Document doc = null;
@@ -185,13 +181,11 @@ public class  xmlParser {
         }
         catch (IOException e) {
             e.printStackTrace();
-            System.exit(3);
         }
         catch (SAXException e) {
             System.out.println("Parsing error");
             System.out.println("  (not supposed to happen with supplied XML files)");
             e.printStackTrace();
-            System.exit(3);
         }
         
         /* At this point 'doc' contains a DOM representation of an 'Items' XML

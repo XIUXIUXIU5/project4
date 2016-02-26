@@ -16,7 +16,7 @@ public class SearchServlet extends HttpServlet implements Servlet {
         String query = request.getParameter("q");
         int numResultsToSkip = Integer.parseInt(request.getParameter("numResultsToSkip"));
         int numResultsToReturn = Integer.parseInt(request.getParameter("numResultsToReturn"));
-        SearchResult[] result = new AuctionSearchClient().basicSearch(query,numResultsToSkip, numResultsToReturn);
+        SearchResult[] result = AuctionSearchClient.basicSearch(query,numResultsToSkip, numResultsToReturn);
 
         request.setAttribute("result", result);
         request.setAttribute("numResultsToReturn",numResultsToReturn);

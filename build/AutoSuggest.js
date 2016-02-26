@@ -7,6 +7,11 @@ window.onload = function () {
 function sendAjaxRequest(input,callback)
 {
 	var xmlHttp = new XMLHttpRequest(); // works only for Firefox, Safari, ...
+  if (xmlHttp == null) {
+      alert("Can't create XMLHttpRequest");
+      callback([]);
+      return;
+   }
   var request = "/eBay/suggest?q="+encodeURI(input);
 
   xmlHttp.open("GET", request); 
