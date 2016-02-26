@@ -47,6 +47,7 @@
         </copy>
         <copy todir="${build-dir}" preservelastmodified="true" overwrite="true">
             <fileset dir="." includes="*.jsp" />
+            <fileset dir="." includes="*.js" />
         </copy>
 	
         <!-- create the war file -->
