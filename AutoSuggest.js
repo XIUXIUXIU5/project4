@@ -28,45 +28,171 @@ xmlHttp.send(null);
 }
 
 function AutoSuggestControl(oTextbox) {
-
+  this.cur = -1;
+  this.layer = null;
   this.textbox = oTextbox;
-
   this.init();
-
 }
 
+AutoSuggestControl.prototype.hideSuggestions = function () {
+    this.layer.style.visibility = "hidden";
+};
+
+
+AutoSuggestControl.prototype.highlightSuggestion = function (oSuggestionNode) {
+
+    for (var i=0; i < this.layer.childNodes.length; i++) {
+        var oNode = this.layer.childNodes[i];
+        if (oNode == oSuggestionNode) {
+            oNode.className = "current"
+        } else if (oNode.className == "current") {
+            oNode.className = "";
+        }
+    }
+};
+
+
+AutoSuggestControl.prototype.createDropDown = function () {
+
+    this.layer = document.createElement("div");
+    this.layer.className = "suggestions";
+    this.layer.style.visibility = "hidden";
+    this.layer.style.width = this.textbox.offsetWidth;
+    document.body.appendChild(this.layer);
+
+    var oThis = this;
+
+    this.layer.onmousedown = this.layer.onmouseup = 
+    this.layer.onmouseover = function (oEvent) {
+        oEvent = oEvent || window.event;
+        oTarget = oEvent.target || oEvent.srcElement;
+
+        if (oEvent.type == "mousedown") {
+            oThis.textbox.value = oTarget.firstChild.nodeValue;
+            oThis.hideSuggestions();
+        } else if (oEvent.type == "mouseover") {
+            oThis.highlightSuggestion(oTarget);
+        } else {
+            oThis.textbox.focus();
+        }
+    };
+
+};
+
+AutoSuggestControl.prototype.getLeft = function () {
+
+    var oNode = this.textbox;
+    var iLeft = 0;
+
+    while(oNode.tagName != "BODY") {
+        iLeft += oNode.offsetLeft;
+        oNode = oNode.offsetParent; 
+    }
+
+    return iLeft;
+};
+
+
+AutoSuggestControl.prototype.getTop = function () {
+
+    var oNode = this.textbox;
+    var iTop = 0;
+
+    while(oNode.tagName != "BODY") {
+        iTop += oNode.offsetTop;
+        oNode = oNode.offsetParent; 
+    }
+
+    return iTop;
+};
+
+AutoSuggestControl.prototype.showSuggestions = function (aSuggestions) {
+
+    var oDiv = null;
+    this.layer.innerHTML = "";
+
+    for (var i=0; i < aSuggestions.length; i++) {
+        oDiv = document.createElement("div");
+        oDiv.appendChild(document.createTextNode(aSuggestions[i]));
+        this.layer.appendChild(oDiv);
+    }
+
+    this.layer.style.left = this.getLeft() + "px";
+    this.layer.style.top = (this.getTop()+this.textbox.offsetHeight) + "px";
+    this.layer.style.visibility = "visible";
+};
+
+AutoSuggestControl.prototype.previousSuggestion = function () {
+    var cSuggestionNodes = this.layer.childNodes;
+
+    if (cSuggestionNodes.length > 0 && this.cur > 0) {
+        var oNode = cSuggestionNodes[--this.cur];
+        this.highlightSuggestion(oNode);
+        this.textbox.value = oNode.firstChild.nodeValue; 
+    }
+};
+
+AutoSuggestControl.prototype.nextSuggestion = function () {
+    var cSuggestionNodes = this.layer.childNodes;
+
+    if (cSuggestionNodes.length > 0 && this.cur < cSuggestionNodes.length-1) {
+        var oNode = cSuggestionNodes[++this.cur];
+        this.highlightSuggestion(oNode);
+        this.textbox.value = oNode.firstChild.nodeValue; 
+    }
+};
+
+AutoSuggestControl.prototype.handleKeyDown = function (oEvent) {
+    switch(oEvent.keyCode) {
+        case 38: //up arrow
+            this.previousSuggestion();
+            break;
+        case 40: //down arrow 
+            this.nextSuggestion();
+            break;
+        case 13: //enter
+            this.hideSuggestions();
+            break;
+    }
+};
 /**
  * Autosuggests one or more suggestions for what the user has typed.
  * If no suggestions are passed in, then no autosuggest occurs.
  * @scope private
  * @param aSuggestions An array of suggestion strings.
  */
- AutoSuggestControl.prototype.autosuggest = function (aSuggestions /*:Array*/) {
+ AutoSuggestControl.prototype.autosuggest = function (aSuggestions,
+bTypeAhead) {
 
-    //make sure there's at least one suggestion
     if (aSuggestions.length > 0) {
-    	console.log(aSuggestions[0]);
-      this.typeAhead(aSuggestions[0]);
+        if (bTypeAhead) {
+            this.typeAhead(aSuggestions[0]);
+        }
+        this.showSuggestions(aSuggestions);
+    } else {
+        this.hideSuggestions();
     }
-  };
-
+};
 
 /**
  * Handles keyup events.
  * @scope private
  * @param oEvent The event object for the keyup event.
  */
- AutoSuggestControl.prototype.handleKeyUp = function (oEvent /*:Event*/) {
+ AutoSuggestControl.prototype.handleKeyUp = function (oEvent /*:Event*/,bTypeAhead) {
 
   var iKeyCode = oEvent.keyCode;
+  var oThis = this;
 
-    //make sure not to interfere with non-character keys
-    if (iKeyCode < 32 || (iKeyCode >= 33 && iKeyCode <= 46) || (iKeyCode >= 112 && iKeyCode <= 123)) {
+    if (iKeyCode == 8 || iKeyCode == 46) {
+        sendAjaxRequest(this.textbox.value, function(result){ 
+          oThis.autosuggest(result,false);
+        });
+    } else if (iKeyCode < 32 || (iKeyCode >= 33 && iKeyCode <= 46) || (iKeyCode >= 112 && iKeyCode <= 123)) {
         //ignore
       } else {
-        var oThis = this;
         sendAjaxRequest(this.textbox.value, function(result){ 
-          oThis.autosuggest(result)
+          oThis.autosuggest(result,true);
         });  
       }
     };
@@ -83,9 +209,23 @@ function AutoSuggestControl(oTextbox) {
       if (!oEvent) {
         oEvent = window.event;
       }    
-      oThis.handleKeyUp(oEvent);
+      oThis.handleKeyUp(oEvent,true);
     };
     
+    this.textbox.onkeydown = function (oEvent) {
+
+        if (!oEvent) {
+            oEvent = window.event;
+        } 
+
+        oThis.handleKeyDown(oEvent);
+    };
+
+    this.textbox.onblur = function () {
+        oThis.hideSuggestions();
+    };
+
+    this.createDropDown();
   };
 
 /**

@@ -1,6 +1,30 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>Search Result
+	<style>
+
+div.suggestions {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid black;
+    position: absolute; 
+        z-index:99;
+  
+}
+
+div.suggestions div {
+    cursor: default;
+    padding: 0px 3px;
+        background-color: white;
+
+}
+
+div.suggestions div.current {
+    background-color: #3366cc;
+    color: white;
+}
+
+</style>
 		<script type="text/javascript" src="AutoSuggest.js">
 </script>
 </head>
