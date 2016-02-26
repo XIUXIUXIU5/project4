@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
 import java.net.URI;
 import java.io.BufferedReader;
-import javax.servlet.ServletOutputStream;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 
 public class ProxyServlet extends HttpServlet implements Servlet {
@@ -58,18 +58,13 @@ public class ProxyServlet extends HttpServlet implements Servlet {
         String inputLine;
         StringBuffer response1 = new StringBuffer();
       
-      	response.addHeader("Access-Control-Allow-Origin", "*"); 	
        	response.setContentType("text/xml");
-
-        ServletOutputStream sout = response.getOutputStream();
   
         while ((inputLine = in.readLine()) != null) {
             response1.append(inputLine);
-            sout.write(inputLine.getBytes());
         }
         in.close();
- 
-        sout.flush();
+        response.getWriter().write(response1.toString());
  
     }
 

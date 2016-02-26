@@ -42,7 +42,7 @@ div.suggestions div.current {
 
 <body>
 	<form name="searchForm" method="get" action="/eBay/search" >
-    Query: <input type="text" id="querybox" name="q" /> 
+    Query: <input type="text" id="querybox" name="q" autocomplete="off"/> 
     <input type="text" name="numResultsToSkip" value="0" hidden>
     <input type="text" name="numResultsToReturn" value="10" hidden>
     <input type="submit" value="submit" />
