@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-public class ItemServlet extends HttpServlet implements Servlet {
-       
+public class ItemServlet extends HttpServlet implements Servlet {       
     public ItemServlet() {}
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -27,7 +26,6 @@ public class ItemServlet extends HttpServlet implements Servlet {
   			e.printStackTrace(new PrintWriter(sw));
   			String stackTrace = sw.toString();
         	request.setAttribute("result", stackTrace);
-
         	System.out.println(e);
         }
 

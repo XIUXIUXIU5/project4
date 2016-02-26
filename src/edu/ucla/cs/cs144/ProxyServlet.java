@@ -21,6 +21,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
     {
     	String query = request.getParameter("q");
 
+        query = escapeSpace(query);
         String url = "http://google.com/complete/search?output=toolbar&q="+query;
          
         URL obj = new URL(url);
@@ -54,5 +55,19 @@ public class ProxyServlet extends HttpServlet implements Servlet {
  
         sout.flush();
  
+    }
+
+    public String escapeSpace(String q)
+    {
+        String result = "";
+        for (int i = 0; i < q.length() ;i++ ) {
+            char c = q.charAt(i);
+            if (c == ' ') {
+                result += "%20";
+            }
+            else
+                result += c;
+        }
+        return result;
     }
 }
