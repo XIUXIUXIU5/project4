@@ -7,7 +7,7 @@ window.onload = function () {
 function sendAjaxRequest(input,callback)
 {
 	var xmlHttp = new XMLHttpRequest(); // works only for Firefox, Safari, ...
-  var request = "http://localhost:1448/eBay/suggest?q="+encodeURI(input);
+  var request = "/eBay/suggest?q="+encodeURI(input);
 
   xmlHttp.open("GET", request); 
   xmlHttp.onreadystatechange = function(){
@@ -161,13 +161,9 @@ AutoSuggestControl.prototype.handleKeyDown = function (oEvent) {
  * @scope private
  * @param aSuggestions An array of suggestion strings.
  */
- AutoSuggestControl.prototype.autosuggest = function (aSuggestions,
-bTypeAhead) {
+ AutoSuggestControl.prototype.autosuggest = function (aSuggestions) {
 
     if (aSuggestions.length > 0) {
-        if (bTypeAhead) {
-            this.typeAhead(aSuggestions[0]);
-        }
         this.showSuggestions(aSuggestions);
     } else {
         this.hideSuggestions();
@@ -179,20 +175,20 @@ bTypeAhead) {
  * @scope private
  * @param oEvent The event object for the keyup event.
  */
- AutoSuggestControl.prototype.handleKeyUp = function (oEvent /*:Event*/,bTypeAhead) {
+ AutoSuggestControl.prototype.handleKeyUp = function (oEvent /*:Event*/) {
 
   var iKeyCode = oEvent.keyCode;
   var oThis = this;
 
     if (iKeyCode == 8 || iKeyCode == 46) {
         sendAjaxRequest(this.textbox.value, function(result){ 
-          oThis.autosuggest(result,false);
+          oThis.autosuggest(result);
         });
     } else if (iKeyCode < 32 || (iKeyCode >= 33 && iKeyCode <= 46) || (iKeyCode >= 112 && iKeyCode <= 123)) {
         //ignore
       } else {
         sendAjaxRequest(this.textbox.value, function(result){ 
-          oThis.autosuggest(result,true);
+          oThis.autosuggest(result);
         });  
       }
     };
@@ -209,7 +205,7 @@ bTypeAhead) {
       if (!oEvent) {
         oEvent = window.event;
       }    
-      oThis.handleKeyUp(oEvent,true);
+      oThis.handleKeyUp(oEvent);
     };
     
     this.textbox.onkeydown = function (oEvent) {

@@ -22,8 +22,6 @@ public class ProxyServlet extends HttpServlet implements Servlet {
     {
     	String query = request.getParameter("q");
 
-        query = escapeSpace(query);
-
       String urlString = "";
       try{
          // escape characters
@@ -66,19 +64,5 @@ public class ProxyServlet extends HttpServlet implements Servlet {
         in.close();
         response.getWriter().write(response1.toString());
  
-    }
-
-    public String escapeSpace(String q)
-    {
-        String result = "";
-        for (int i = 0; i < q.length() ;i++ ) {
-            char c = q.charAt(i);
-            if (c == ' ') {
-                result += "%20";
-            }
-            else
-                result += c;
-        }
-        return result;
     }
 }
