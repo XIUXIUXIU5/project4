@@ -261,6 +261,7 @@ public class  xmlParser {
             bidslist.add(bid);
         }
 
+        Collections.sort(bidslist);
 
         Bid[] bidresult = new Bid[bidslist.size()];
             bidresult = bidslist.toArray(bidresult);
