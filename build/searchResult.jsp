@@ -28,20 +28,20 @@ div.suggestions div.current {
 		<script type="text/javascript" src="AutoSuggest.js">
 </script>
 </head>
-	<c:url value="/eBay/search" var="nexturl">
+	<c:url value="search" var="nexturl">
 			<c:param name="q" value="${query}"/>
 			<c:param name="numResultsToSkip" value="${numResultsToReturn+numResultsToSkip}"/>
 			<c:param name="numResultsToReturn" value="${numResultsToReturn}"/>
 	</c:url>
 
-	<c:url value="/eBay/search" var="prevurl">
+	<c:url value="search" var="prevurl">
 			<c:param name="q" value="${query}"/>
 			<c:param name="numResultsToSkip" value="${numResultsToSkip-numResultsToReturn}"/>
 			<c:param name="numResultsToReturn" value="${numResultsToReturn}"/>
 	</c:url>
 
 <body>
-	<form name="searchForm" method="get" action="/eBay/search" >
+	<form name="searchForm" method="get" action="search" >
     Query: <input type="text" id="querybox" name="q" autocomplete="off"/> 
     <input type="text" name="numResultsToSkip" value="0" hidden>
     <input type="text" name="numResultsToReturn" value="10" hidden>
@@ -59,7 +59,7 @@ div.suggestions div.current {
     <c:otherwise>
 
 	<c:forEach var="item" items="${result}">
-		<c:url value="/item" var="itemurl">
+		<c:url value="item" var="itemurl">
 		<c:param name="id" value="${item.itemId}"/>
 		</c:url>
 		<a href="${itemurl}">${item.itemId} </a> ${item.name}
