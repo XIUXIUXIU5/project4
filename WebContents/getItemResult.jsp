@@ -83,9 +83,9 @@ function initialize() {
   </head>
   <body onload="initialize()">
 
-  	<form name="getItemForm" method="get" action="http://localhost:1448/eBay/item?">
+  	<form name="getItemForm" method="get" action="/eBay/item">
   		ItemID: <input type="text" name="id"/> <br/>
-  		<input type="submit" value="GO" />
+  		<input type="submit" value="submit" />
   	</form>
 
   	<h4>
