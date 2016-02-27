@@ -8,7 +8,7 @@ function sendAjaxRequest(input,callback)
 {
 	var xmlHttp = new XMLHttpRequest(); // works only for Firefox, Safari, ...
   if (xmlHttp == null) {
-      alert("Can't create XMLHttpRequest");
+      console.log("Can't create XMLHttpRequest");
       callback([]);
       return;
    }
@@ -29,6 +29,7 @@ function sendAjaxRequest(input,callback)
   }
 
 };
+console.log(xmlHttp);
 xmlHttp.send(null);
 }
 

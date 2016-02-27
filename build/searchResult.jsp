@@ -26,7 +26,7 @@ div.suggestions div.current {
 
 </style>
 		<script type="text/javascript" src="AutoSuggest.js">
-</script>
+		</script>
 </head>
 	<c:url value="search" var="nexturl">
 			<c:param name="q" value="${query}"/>
@@ -51,7 +51,7 @@ div.suggestions div.current {
 <c:choose>
     <c:when test="${empty result}">
         No more result found
-    </br>
+    <br/>
         <c:if test="${numResultsToSkip != 0}">
     		<a href="${prevurl}">Previous</a>
 		</c:if>
@@ -63,7 +63,7 @@ div.suggestions div.current {
 		<c:param name="id" value="${item.itemId}"/>
 		</c:url>
 		<a href="${itemurl}">${item.itemId} </a> ${item.name}
-	</br>
+	<br/>
 	</c:forEach>
 
 		<c:if test="${numResultsToSkip != 0}">
